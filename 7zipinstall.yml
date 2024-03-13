@@ -1,9 +1,19 @@
 ---
-- name: Install 7zip
-  host: all
-  gather_facts: false
+- name: Test software installation on Windows
+  hosts: all
+  gather_facts: no
+
   tasks:
-    - name: Install 7-zip
+    - name: Install test software
       win_chocolatey:
         name: 7zip
         state: present
+
+    - name: Check if the software is installed
+      win_shell: |
+        choco list --local-only <test_package_name>
+      register: choco_output
+
+    - name: Display software installation status
+      debug:
+        msg: "Test software is installed: {{ 'True' if choco_output.stdout | search('<test_package_name>') else 'False' }}"
