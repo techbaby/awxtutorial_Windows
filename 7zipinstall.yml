@@ -1,9 +1,15 @@
 ---
 - name: Test software installation on Windows
   hosts: all
-  gather_facts: no
+  become: false
+  gather_facts: false
+  vars:
+    - packages:
+      - git
+      - notepadplusplus
   tasks:
-    - name: Ensure 7-Zip is installed through Chocolatey
-      win_chocolatey:
-        name: 7zip
+    - name: install packages
+      chocolatey.chocolatey.win_chocolatey:
+        name: "{{ packages }}"
+        # check if git and notepad++ is installed. If not, chocolatey will install them
         state: present
